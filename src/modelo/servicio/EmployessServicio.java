@@ -28,5 +28,35 @@ public class EmployessServicio implements IEmployessServicio{
         return empleado;
     }
 
+    @Override
+    public boolean borrarEmpleado(int idEmpleado) {
+        SessionFactory sessionFactory=SessionFactoryUtil.getSessionFactory();
+        Transaction tx=null;
+        boolean exito=true;
+        try(Session session= sessionFactory.openSession()){
+            tx= session.beginTransaction();
+            Employees empleado=session.get(Employees.class,idEmpleado);
+            if(empleado!=null){
+                session.delete(empleado);
+                tx.commit();
+            }else{
+                exito=false;
+            }
+
+        }catch (Exception ex) {
+            System.out.println("Ha ocurrido una exception: " + ex.getMessage());
+
+            if (tx != null) {
+                tx.rollback();
+            }
+
+        }
+
+
+
+
+        return exito;
     }
+
+}
 
